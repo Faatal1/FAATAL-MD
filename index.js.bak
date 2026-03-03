@@ -37,9 +37,6 @@ iniciarSpinner,
 finalizarSpinner
 } = require('./arquivos/lib/functions');
 
-const { checkAndApplyUpdates } = require('./autoupdate');
-
-
 
 const fs = require('fs')
 if (!fs.existsSync('./tmp')) fs.mkdirSync('./tmp');
