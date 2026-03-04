@@ -9,7 +9,7 @@ const chalk = require('chalk');
  */
 
 async function checkAndApplyUpdates() {
-    console.log(chalk.blue('🔄 [Auto-Update] Verificando atualizações...'));
+    console.log(chalk.blue('🔄 Verificando se há atualizações...'));
 
     try {
         // Verifica se é um repositório git
@@ -25,29 +25,28 @@ async function checkAndApplyUpdates() {
         const status = execSync('git status -uno').toString();
         
         if (status.includes('Your branch is behind') || status.includes('pode ser atualizado')) {
-            console.log(chalk.green('✨ [Auto-Update] Nova atualização encontrada! Aplicando...'));
+            console.log(chalk.green('✨  Nova atualização encontrada! Aplicando...'));
             
             // Faz o pull das alterações
             // Usamos --rebase para evitar commits de merge desnecessários
             // E assumimos que o usuário não mexeu nos arquivos principais (ou usamos stash se necessário)
             try {
                 execSync('git pull --rebase', { stdio: 'inherit' });
-                console.log(chalk.green('✅ [Auto-Update] Atualização aplicada com sucesso.'));
+                console.log(chalk.green('✅ Bot atualizado com sucesso.'));
                 
-                // Verifica se o package.json mudou para reinstalar dependências
-                // (Opcional, mas recomendado)
-                // execSync('npm install', { stdio: 'inherit' });
+                // Verifica se o package.json mudou 
+                 execSync('npm install', { stdio: 'inherit' });
                 
                 return true; // Indica que houve atualização e o bot deve reiniciar
             } catch (pullError) {
-                console.log(chalk.red('❌ [Auto-Update] Erro ao fazer pull. Tentando forçar atualização...'));
+                console.log(chalk.red('🚫 Erro ao atualizar. Tentando forçar atualização...'));
                 // Se houver conflito, podemos forçar o reset para o estado do servidor
                 // CUIDADO: Isso apaga alterações locais do cliente nos arquivos do bot
-                // execSync('git reset --hard origin/main', { stdio: 'inherit' });
+                 execSync('git reset --hard origin/main', { stdio: 'inherit' });
                 return false;
             }
         } else {
-            console.log(chalk.cyan('✅ [Auto-Update] O bot já está na versão mais recente.'));
+            console.log(chalk.cyan('✅ O bot já está atualizado.'));
             return false;
         }
     } catch (error) {
