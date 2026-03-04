@@ -578,9 +578,7 @@ setInterval(async () => {
                 );
 
                 await client.sendMessage(grupo, {
-                    text:
-`🟢 O grupo foi aberto novamente.
-💬 As mensagens já estão liberadas!`
+                    text:`🔓 Grupo aberto automaticamente.`
                 });
 
             }

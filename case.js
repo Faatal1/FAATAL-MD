@@ -2488,6 +2488,52 @@ const text = args.join(" ");
 
 switch (comando) {
 
+case "vergp": {
+
+    if (!isGroup) return reply("Esse comando funciona apenas em grupos.");
+    if (!isAdmin && !soDono) return reply("🚫 Apenas administradores podem usar este comando.");
+
+    const db = lerHorario();
+
+    if (!db[from])
+        return reply("⚠️ Nenhum horário automático configurado neste grupo.");
+
+    const fechar = db[from].fechar || "Não definido";
+    const abrir = db[from].abrir || "Não definido";
+
+    const texto =
+`╭━━━〔 ⏰ HORÁRIOS DO GRUPO 〕━━━╮
+
+🔒 Fechar grupo : ${fechar}
+🔓 Abrir grupo  : ${abrir}
+
+╰━━━━━━━━━━━━━━━━━━━━━━╯
+> 𝙵𝙰𝙰𝚃𝙰𝙻 𝙼𝙳`;
+
+    reply(texto);
+
+}
+break;
+
+case "resetgp": {
+
+    if (!isGroup) return reply("Esse comando funciona apenas em grupos.");
+    if (!isAdmin && !soDono) return reply("Apenas administradores.");
+
+    const db = lerHorario();
+
+    if (!db[from])
+        return reply("⚠️ Não existe horário configurado neste grupo.");
+
+    delete db[from];
+
+    salvarHorario(db);
+
+    reply("🧹 Horários de abrir e fechar grupo foram removidos.");
+
+}
+break;
+
 case "fechargp": {
 
     if (!isGroup) return reply("Esse comando é apenas para grupos.");
