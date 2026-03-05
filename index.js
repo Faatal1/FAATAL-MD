@@ -597,59 +597,79 @@ setInterval(async () => {
 //━━━━━━━━━━━━━━━━━━
 
 client.ev.on('group-participants.update', async (update) => {
-    try {
-        const { id, participants, action } = update;
-        if (action !== 'add') return;
+try {
 
-        const fs = require('fs');
-        const dbPath = "./arquivos/config/bemvindo.json";
-        if (!fs.existsSync(dbPath)) return;
+const { id, participants, action } = update
+if (action !== 'add') return
 
-        const db = JSON.parse(fs.readFileSync(dbPath));
-        if (!db[id]) return; // sistema desligado
+const fs = require('fs')
 
-        const config = require('./dono/config/data.json');
-        const apikey = config.apikey2;
+const ativado = "./arquivos/config/bemvindo.json"
+const fotoDB = "./arquivos/config/fotobv.json"
+const legendaDB = "./arquivos/config/legendabv.json"
 
-        const metadata = await client.groupMetadata(id);
-        const nomeGrupo = metadata.subject;
+if (!fs.existsSync(ativado)) return
 
-        // pega foto do perfil
-        async function pegarAvatar(jid) {
-            try {
-                return await client.profilePictureUrl(jid, 'image');
-            } catch {
-                return 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png';
-            }
-        }
+const db = JSON.parse(fs.readFileSync(ativado))
+if (!db[id]) return
 
-        for (let user of participants) {
+const metadata = await client.groupMetadata(id)
+const nomeGrupo = metadata.subject
+const regras = metadata.desc || "Sem regras definidas."
 
-            const avatar = await pegarAvatar(user);
+let legenda = "👋 Olá {user}, seja bem vindo ao grupo *{grupo}*!"
 
-            const url = `https://tokito-apis.site/canvas/welcome?fundo=https://tokito-apis.site/de291c.jpg&avatar=${encodeURIComponent(avatar)}&titulo=Bem-vindo!&sub=Novo+Membro&apikey=${apikey}`;
+if (fs.existsSync(legendaDB)) {
+const ldb = JSON.parse(fs.readFileSync(legendaDB))
+if (ldb[id]) legenda = ldb[id]
+}
 
-            const mensagem = `👋 Olá @${user.split("@")[0]}, seja muito muito bem vindo ao grupo *${nomeGrupo}*!`;
+let foto = null
 
-            try {
-                await client.sendMessage(id, {
-                    image: { url },
-                    caption: mensagem,
-                    mentions: [user]
-                });
-            } catch {
-                await client.sendMessage(id, {
-                    text: mensagem,
-                    mentions: [user]
-                });
-            }
-        }
+if (fs.existsSync(fotoDB)) {
+const fdb = JSON.parse(fs.readFileSync(fotoDB))
+if (fdb[id]) foto = fdb[id]
+}
 
-    } catch (err) {
-        console.log("Erro boas-vindas:", err);
-    }
-});
+for (let user of participants) {
 
+let mensagem = legenda
+.replace(/{user}/g, `@${user.split("@")[0]}`)
+.replace(/{grupo}/g, nomeGrupo)
+.replace(/{regras}/g, regras)
+
+if (foto && fs.existsSync(foto)) {
+
+await client.sendMessage(id,{
+image:{ url: foto },
+caption: mensagem,
+mentions:[user]
+})
+
+} else {
+
+const avatar = await client.profilePictureUrl(user,'image')
+.catch(()=> 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png')
+
+const config = require('./dono/config/data.json')
+const apikey = config.apikey2
+
+const url = `https://tokito-apis.site/canvas/welcome?fundo=https://tokito-apis.site/de291c.jpg&avatar=${encodeURIComponent(avatar)}&titulo=Bem-vindo!&sub=Novo+Membro&apikey=${apikey}`
+
+await client.sendMessage(id,{
+image:{ url },
+caption: mensagem,
+mentions:[user]
+})
+
+}
+
+}
+
+} catch(err){
+console.log("Erro boas vindas:", err)
+}
+})
 
 //━━━━━━━━━━━━━━━━━━
 // 🔄 DETECTAR RESTART

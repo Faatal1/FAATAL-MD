@@ -11,6 +11,7 @@ const path = require('path');
 const { areJidsSameUser } = require('@whiskeysockets/baileys');
 const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
 
+
 //JOGO DA FORCA 
 let jogoForca = {}
 
@@ -1299,7 +1300,9 @@ const commandList = [
     "resetgp", "resetprefixgp", "rg", "rmvip", "score",
     "serasa", "servip", "setprefixgp", "sex", "tapa",
     "telefone", "ttk", "ttk2", "vergp", "abracar", "louca", "carinho",
-    "forca", "cancelarforca"
+    "forca", "cancelarforca", "Pingif", "fotobv", "legendabv",
+     "resetfotobv", "reset_legendabv"
+    
 ];
 
 
@@ -2792,6 +2795,224 @@ const text = args.join(" ");
 
 switch (comando) {
 
+case "reset_legendabv": {
+
+if (!isGroup) return enviar("❌ Apenas em grupos.")
+if (!isAdmin && !soDono) return enviar("❌ Apenas administradores.")
+
+const fs = require("fs")
+
+const caminho = "./arquivos/config/legendabv.json"
+
+if (!fs.existsSync(caminho)){
+return enviar("⚠️ Nenhuma legenda personalizada foi definida.")
+}
+
+let db = JSON.parse(fs.readFileSync(caminho))
+
+if (!db[from]){
+return enviar("⚠️ Este grupo não tem legenda personalizada.")
+}
+
+delete db[from]
+
+fs.writeFileSync(caminho, JSON.stringify(db,null,2))
+
+enviar("✅ Legenda de boas-vindas resetada.\nO bot voltou a usar a legenda padrão.")
+
+}
+break
+
+case "resetfotobv": {
+
+if (!isGroup) return enviar("❌ Apenas em grupos.")
+if (!isAdmin && !soDono) return enviar("❌ Apenas administradores.")
+
+const fs = require("fs")
+
+const caminho = "./arquivos/config/fotobv.json"
+
+if (!fs.existsSync(caminho)){
+return enviar("⚠️ Nenhuma foto personalizada definida.")
+}
+
+let db = JSON.parse(fs.readFileSync(caminho))
+
+if (!db[from]){
+return enviar("⚠️ Este grupo não tem foto personalizada.")
+}
+
+const foto = db[from]
+
+// apaga a imagem se existir
+if (fs.existsSync(foto)){
+fs.unlinkSync(foto)
+}
+
+delete db[from]
+
+fs.writeFileSync(caminho, JSON.stringify(db,null,2))
+
+enviar("✅ Foto de boas-vindas resetada e arquivo removido.")
+
+}
+break
+
+case "fotobv": {
+
+if (!isGroup) return enviar("❌ Apenas em grupos.")
+if (!isAdmin && !soDono) return enviar("❌ Apenas administradores.")
+
+const fs = require("fs")
+const { downloadContentFromMessage } = require("@whiskeysockets/baileys")
+
+let imagem = null
+
+// foto enviada junto
+if (info.message?.imageMessage) {
+imagem = info.message.imageMessage
+}
+
+// foto respondida
+if (!imagem && info.message?.extendedTextMessage?.contextInfo?.quotedMessage?.imageMessage) {
+imagem = info.message.extendedTextMessage.contextInfo.quotedMessage.imageMessage
+}
+
+if (!imagem) return enviar("📸 Marque ou responda uma foto.")
+
+const stream = await downloadContentFromMessage(imagem, "image")
+
+let buffer = Buffer.from([])
+
+for await(const chunk of stream){
+buffer = Buffer.concat([buffer, chunk])
+}
+
+const pasta = "./arquivos/bemvindo"
+
+if (!fs.existsSync(pasta)){
+fs.mkdirSync(pasta)
+}
+
+const caminho = `${pasta}/${from}.jpg`
+
+fs.writeFileSync(caminho, buffer)
+
+let db = {}
+
+const pathDB = "./arquivos/config/fotobv.json"
+
+if (fs.existsSync(pathDB)){
+db = JSON.parse(fs.readFileSync(pathDB))
+}
+
+db[from] = caminho
+
+fs.writeFileSync(pathDB, JSON.stringify(db,null,2))
+
+enviar("✅ Foto de boas vindas alterada.")
+
+}
+break
+
+case "legendabv": {
+
+if (!isGroup) return enviar("❌ Apenas em grupos.")
+if (!isAdmin && !soDono) return enviar("❌ Apenas administradores.")
+
+const fs = require("fs")
+
+const q = args.join(" ")
+
+if (!q){
+
+return enviar(`✏️ Exemplo de uso:
+
+${prefix}legendabv Seja bem vindo {user} ao grupo {grupo}
+
+📌 Variáveis disponíveis:
+
+{user} → marca o membro
+{grupo} → nome do grupo
+{regras} → descrição do grupo
+
+Exemplo:
+
+Seja bem vindo {user}
+
+Grupo: {grupo}
+
+📜 Regras:
+
+{regras}`)
+}
+
+const caminho = "./arquivos/config/legendabv.json"
+
+let db = {}
+
+if (fs.existsSync(caminho)){
+db = JSON.parse(fs.readFileSync(caminho))
+}
+
+db[from] = q
+
+fs.writeFileSync(caminho, JSON.stringify(db,null,2))
+
+enviar("✅ Legenda de boas vindas alterada.")
+
+}
+break
+
+case 'pingif':
+case 'pin_gif': {
+    try {
+        const q = args.join(" "); 
+        if (!q) return reply(`⚠️ Digite o que deseja buscar!\nExemplo: ${prefix}pin_gif Naruto`);
+
+        await client.sendMessage(from, {
+            text: `🔍 Buscando GIF no Pinterest para: *${q}*...`
+        }, { quoted: info });
+
+        const fs = require("fs");
+        const axios = require("axios");
+        const dataConfig = JSON.parse(fs.readFileSync("./dono/config/data.json"));
+        const apiKey = dataConfig.apikey2; 
+
+        if (!apiKey) {
+            return reply("❌ apikey2 não encontrada no data.json.");
+        }
+
+        const apiURL = `https://api.blackaut.shop/api/pesquisa/pinterestgif?nome=${encodeURIComponent(q)}&apikey=${apiKey}`;
+        
+        // Faz a chamada para a API para pegar o JSON que você me mostrou
+        const response = await axios.get(apiURL);
+        const res = response.data;
+
+        if (!res.status || !res.resultado || res.resultado.length === 0) {
+            return reply("❌ Não encontrei nenhum GIF para essa busca.");
+        }
+
+        // Escolhe o primeiro resultado da lista
+        const gifEscolhido = res.resultado[0];
+        const linkGif = gifEscolhido.url_mp4 || gifEscolhido.url_gif;
+
+        await client.sendMessage(from, {
+            video: { url: linkGif },
+            gifPlayback: true,
+            mentions: [sender]
+        }, { quoted: info });
+
+    } catch (err) {
+        console.log("Erro no comando pin_gif:", err);
+        reply("❌ Ocorreu um erro ao processar sua busca ou a API está offline.");
+    }
+}
+break;
+
+
+
+
 case "cita": {
 
 if (!isGroup) return reply("📢 Esse comando funciona apenas em grupos.");
@@ -3849,7 +4070,7 @@ case "figemoji": {
             destino = sender;
             await client.sendMessage(from, { text: "😎 Enviando figurinhas de emoji no seu PV..." }, { quoted: info });
         } else {
-            await client.sendMessage(from, { text: "😎 Enviando figurinhas de emoji..." }, { quoted: info });
+            await client.sendMessage(from, { text: "?? Enviando figurinhas de emoji..." }, { quoted: info });
         }
 
         const tmpDir = path.join(__dirname, "tmp");
@@ -5198,7 +5419,7 @@ case 'rankgostoso': {
     if (participantes.length < 2)
         return reply("😏 Não há pessoas suficientes no grupo.");
 
-    // 😏 reação imediata
+    // ?? reação imediata
     await client.sendMessage(from, {
         react: { text: "😏", key: info.key }
     });
@@ -11324,7 +11545,7 @@ const canvasURL =
 `&node=${process.version}` +
 `&commands=${totalCmds}` +
 `&avatar=${encodeURIComponent(avatar)}` +
-`&fundo=https://tokito-apis.site/38ce59.png` +
+`&fundo=https://tokito-apis.site/6b9dbb.jpg` +
 `&apikey=${data.apikey}`;
 
 //━━━━━━━━━━━━━━━━━━
