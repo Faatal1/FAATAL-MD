@@ -1,35 +1,50 @@
 //━━━━━━━━━━━━━━━━━━━━━━━━━━
 // 🛡 PROTEÇÃO GLOBAL
 //━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 process.on("unhandledRejection", console.error);
 process.on("uncaughtException", console.error);
+
+
 
 /*━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📦 MÓDULOS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*/
+
 const {
-    default: makeWASocket,
-    useMultiFileAuthState,
-    fetchLatestBaileysVersion,
-    Browsers,
-    DisconnectReason,
-    downloadContentFromMessage
+default: makeWASocket,
+useMultiFileAuthState,
+fetchLatestBaileysVersion,
+Browsers,
+DisconnectReason,
+downloadContentFromMessage
 } = require('@whiskeysockets/baileys');
 
 const pino = require('pino');
 const readline = require('readline');
 const chalk = require('chalk');
 const gradient = require('gradient-string');
-const fs = require('fs');
-const path = require('path');
 
-// Importar o script de atualização seletiva (FORMATO CLÁSSICO)
-const { selectiveUpdate } = require('./selective_update.js');
 
-// Importações de arquivos locais
 const data = require('./dono/config/data.json');
-const caseHandler = require('./case');
-const { hotReload, mostrarBoot, iniciarSpinner, finalizarSpinner } = require('./arquivos/lib/functions');
+
+let caseHandler = require('./case');
+
+const {
+hotReload,
+mostrarBoot,
+iniciarSpinner,
+finalizarSpinner
+} = require('./arquivos/lib/functions');
+
+const { checkAndApplyUpdates } = require('./autoupdate');
+
+
+
+const fs = require('fs')
+if (!fs.existsSync('./tmp')) fs.mkdirSync('./tmp');
+
+const path = require('path');
 
 const caminhoPrefixos = path.join(__dirname, 'arquivos/config/prefixos.json');
 
@@ -307,14 +322,13 @@ console.log("⚠ Socket já ativo — ignorando duplicação");
 return;
 }
 
-    // 🔄 VERIFICAÇÃO DE ATUALIZAÇÕES 
-    // Se houver atualização, o bot faz o pull e encerra o processo para o start.sh reiniciar
-    const updated = await selectiveUpdate();
-    if (updated) {
-        console.log(chalk.green('🚀 [Auto-Update] Reiniciando o bot para aplicar as novas alterações...'));
-        process.exit(0); // O loop no start.sh cuidará do reinício
-    }
-
+// 🔄 VERIFICAÇÃO DE ATUALIZAÇÕES 
+// Se houver atualização, o bot faz o pull e encerra o processo para o start.sh reiniciar
+const updated = await checkAndApplyUpdates();
+if (updated) {
+    console.log(chalk.green('🚀 [Auto-Update] Reiniciando o bot para aplicar as novas alterações...'));
+    process.exit(0); // O loop no start.sh cuidará do reinício
+}
 
 
 global.botLigado = true;

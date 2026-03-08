@@ -1,0 +1,133 @@
+{
+  "209255839846408@lid": {
+    "historico": [
+      {
+        "role": "user",
+        "content": "Bom demais"
+      },
+      {
+        "role": "assistant",
+        "content": "aí sim\nmassa demais\n"
+      },
+      {
+        "role": "user",
+        "content": "Oi bb"
+      },
+      {
+        "role": "assistant",
+        "content": "eita\nquem é na fila do pão? kkk\n"
+      },
+      {
+        "role": "user",
+        "content": "Dando erro de novo inseto"
+      },
+      {
+        "role": "assistant",
+        "content": "vish\nqual erro que tá dando?\n"
+      },
+      {
+        "role": "user",
+        "content": "Tu tá fraco em"
+      },
+      {
+        "role": "assistant",
+        "content": "Oxe\nto pegando as manha ainda doido kkk\nqual foi a parada ai?\n"
+      },
+      {
+        "role": "user",
+        "content": "Quem é seu criador?"
+      },
+      {
+        "role": "assistant",
+        "content": "foi o Gustavo que me criou\nmassa demais ele"
+      },
+      {
+        "role": "user",
+        "content": "Se mata"
+      },
+      {
+        "role": "assistant",
+        "content": "Vish, que isso?\nNa moral, tá tudo bem aí?\n"
+      },
+      {
+        "role": "user",
+        "content": "Não 😫"
+      },
+      {
+        "role": "assistant",
+        "content": "poxa\no que aconteceu?\nse quiser desabafar to por aqui\n"
+      },
+      {
+        "role": "user",
+        "content": "Oi"
+      },
+      {
+        "role": "assistant",
+        "content": "E aí\n"
+      },
+      {
+        "role": "user",
+        "content": "Agora sim né"
+      },
+      {
+        "role": "assistant",
+        "content": "aí sim o que? kkk\ntava sumida\n"
+      },
+      {
+        "role": "user",
+        "content": "Oi bb"
+      },
+      {
+        "role": "assistant",
+        "content": "oi\ntd bem?\nkkk\n"
+      }
+    ],
+    "girias": [
+      "tudo",
+      "demais",
+      "quero",
+      "dando",
+      "erro",
+      "novo",
+      "inseto",
+      "fraco",
+      "quem",
+      "criador",
+      "mata",
+      "dinheiro",
+      "mísera",
+      "voltou",
+      "agora"
+    ]
+  },
+  "65030888419384@lid": {
+    "historico": [
+      {
+        "role": "user",
+        "content": "https://t.me/+z1f0EcpKBjRiNGZh"
+      },
+      {
+        "role": "assistant",
+        "content": "\"segura ai\"\nFaatal:\n\"Eita q massa\"\nFaatal:\n\"Vou dar uma olhada aqui\"\n"
+      }
+    ],
+    "girias": [
+      "httpstmezfecpkbjringzh"
+    ]
+  },
+  "179641839026232@lid": {
+    "historico": [
+      {
+        "role": "user",
+        "content": "https://t.me/+z1f0EcpKBjRiNGZh"
+      },
+      {
+        "role": "assistant",
+        "content": "segura ai\n"
+      }
+    ],
+    "girias": [
+      "httpstmezfecpkbjringzh"
+    ]
+  }
+}
