@@ -18,5 +18,4 @@ yarn-error.log*
 
 # Outros
 tmp/
-dono/
-arquivos/config/
+arquivos/config/*.json
