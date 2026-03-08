@@ -1298,6 +1298,7 @@ function detectarXingamento(texto) {
     return null;
 }
 
+
 //━━━━━━━━━━━━━━━━━━━━━━━━━━
 // 🌍 SISTEMA GLOBAL IA
 //━━━━━━━━━━━━━━━━━━━━━━━━━━
