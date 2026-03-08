@@ -676,8 +676,57 @@
       {
         "role": "assistant",
         "content": "E aí.\nTudo certo?\n"
+      },
+      {
+        "role": "user",
+        "content": "Opa"
+      },
+      {
+        "role": "assistant",
+        "content": "E aí, beleza?\n"
+      },
+      {
+        "role": "user",
+        "content": "Tudo bom meu brother?"
+      },
+      {
+        "role": "assistant",
+        "content": "Tudo sussa por aqui.\nE contigo?\n"
+      },
+      {
+        "role": "user",
+        "content": "Tô bom demais"
+      },
+      {
+        "role": "assistant",
+        "content": "Aí sim!\nMassa te ouvir.\n"
+      },
+      {
+        "role": "user",
+        "content": "Qual é a raiz quadrada de 25?"
+      },
+      {
+        "role": "assistant",
+        "content": "5\n"
+      },
+      {
+        "role": "user",
+        "content": "Curto e direto em"
+      },
+      {
+        "role": "assistant",
+        "content": "rapaz, tem q ser né\nsenão fico enrolando atoa\nkkk\n"
       }
     ],
-    "girias": []
+    "girias": [
+      "tudo",
+      "brother",
+      "demais",
+      "qual",
+      "raiz",
+      "quadrada",
+      "curto",
+      "direto"
+    ]
   }
 }

@@ -1477,7 +1477,7 @@ const commandList = [
     "forca", "cancelarforca", "divorcio", "casar", "Pingif",
     "legendabv", "fotobv", "resetfotobv", "reset_legendabv",
     "meupar", "divorcio", "trair", "animememe", "wallpaper",
-    "metadinha2", "hentai"
+    "metadinha2", "hentai", "sugestão", "surubao"
 ];
 
 
@@ -3014,6 +3014,127 @@ const text = args.join(" ");
 ━━━━━━━━━━━━━━━━━━━━━━━━━━*/
 
 switch (comando) {
+
+case "sugestao":
+case "sugestão": {
+
+const textoSugestao = args.join(" ")
+
+if(!textoSugestao)
+return reply(
+`💡 *Envie uma sugestão*
+
+Exemplo:
+${prefix}sugestao adicionar comando de clima`
+)
+
+try{
+
+const criador = "556399468264@s.whatsapp.net"
+
+const numero = sender.split("@")[0].replace(/\D/g,'')
+const nome = info.pushName || "Usuário"
+
+let grupo = "Privado"
+
+if(isGroup){
+const metadata = await client.groupMetadata(from)
+grupo = metadata.subject
+}
+
+const mensagemSugestao =
+`╭━━━〔 💡 NOVA SUGESTÃO 〕━━━╮
+
+┃ 👤 Usuário » ${nome}
+┃ 📱 Contato » wa.me/${numero}
+┃ 👥 Origem » ${grupo}
+
+┃ 💬 Sugestão enviada:
+┃ ${textoSugestao}
+
+╰━━━━━━━━━━━━━━━━━━━━╯
+> 𝙁𝘼𝘼𝙏𝘼𝙇 𝙈𝘿`
+
+await client.sendMessage(criador,{
+text: mensagemSugestao
+})
+
+await client.sendMessage(from,{
+text:
+`💡 Sugestão enviada ao criador.
+✨ Obrigado por ajudar a melhorar o bot!`
+},{quoted:info})
+
+}catch(err){
+
+console.log("Erro sugestão:", err)
+
+reply("❌ Não consegui enviar a sugestão.")
+
+}
+
+}
+break
+
+case "bug": {
+
+const textoBug = args.join(" ")
+
+if(!textoBug)
+return reply(
+`🐞 *Reporte um bug*
+
+Exemplo:
+${prefix}bug o comando play não está funcionando`
+)
+
+try{
+
+const criador = "556399468264@s.whatsapp.net"
+
+const numero = sender.split("@")[0].replace(/\D/g,'')
+const nome = info.pushName || "Usuário"
+
+let grupo = "Privado"
+
+if(isGroup){
+const metadata = await client.groupMetadata(from)
+grupo = metadata.subject
+}
+
+const mensagemBug =
+`╭━━━〔 🐞 RELATÓRIO DE BUG 〕━━━╮
+
+┃ 👤 Usuário » ${nome}
+┃ 📱 Contato » wa.me/${numero}
+┃ 👥 Origem » ${grupo}
+
+┃ 📝 Problema relatado:
+┃ ${textoBug}
+
+╰━━━━━━━━━━━━━━━━━━━━╯
+> 𝙁𝘼𝘼𝙏𝘼𝙇 𝙈𝘿`
+
+await client.sendMessage(criador,{
+text: mensagemBug
+})
+
+await client.sendMessage(from,{
+text:
+`🐞 Bug enviado ao criador.
+⏳ Aguarde enquanto ele analisa e corrige.`
+},{quoted:info})
+
+}catch(err){
+
+console.log("Erro bug:", err)
+
+reply("❌ Não consegui enviar o bug.")
+
+}
+
+}
+break
 
 case "surubao": {
     try {

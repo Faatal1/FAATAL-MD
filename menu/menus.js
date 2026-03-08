@@ -41,6 +41,8 @@ ${readMore}
 ┃ 🩸 ${prefix}wallpaper
 ┃ 🩸 ${prefix}ping
 ┃ 🩸 ${prefix}criador
+┃ 🩸 ${prefix}sugestão 
+┃ 🩸 ${prefix}bug
 ┃ 🩸 ${prefix}nick (seu nick)
 ┃ 🩸 ${prefix}gerarlink (marcar/img)
 ┃ 🩸 ${prefix}fotoperfil (@)
