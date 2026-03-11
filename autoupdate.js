@@ -1,57 +1,70 @@
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
-const chalk = require('chalk');
-
-/**
- * Sistema de Atualização Automática Global - FAATAL-MD
- * Este script verifica se há atualizações no repositório Git e as aplica.
- */
+const { execSync } = require('child_process')
+const fs = require('fs')
+const path = require('path')
+const chalk = require('chalk')
 
 async function checkAndApplyUpdates() {
-    console.log(chalk.blue('🔄 Verificando se há atualizações...'));
+
+    console.log(chalk.blue('🔎 Verificando atualizações...'))
 
     try {
-        // Verifica se é um repositório git
+
         if (!fs.existsSync(path.join(__dirname, '.git'))) {
-            console.log(chalk.yellow('⚠️ [Auto-Update] Repositório Git não encontrado. O auto-update requer que o bot tenha sido clonado via Git.'));
-            return false;
+            console.log(chalk.yellow('⚠️ Repositório git não encontrado.'))
+            return false
         }
 
-        // Busca as alterações do remoto
-        execSync('git fetch', { stdio: 'inherit' });
+        execSync('git fetch', { stdio: 'ignore' })
 
-        // Verifica se o branch local está atrás do remoto
-        const status = execSync('git status -uno').toString();
-        
-        if (status.includes('Your branch is behind') || status.includes('pode ser atualizado')) {
-            console.log(chalk.green('✨  Nova atualização encontrada! Aplicando...'));
-            
-            // Faz o pull das alterações
-            // Usamos --rebase para evitar commits de merge desnecessários
-            // E assumimos que o usuário não mexeu nos arquivos principais (ou usamos stash se necessário)
+        const status = execSync('git status -uno').toString()
+
+        if (status.includes('behind') || status.includes('pode ser atualizado')) {
+
+            console.log(chalk.yellow('⬇️ Atualização encontrada. Atualizando...'))
+
             try {
-                execSync('git pull --rebase', { stdio: 'inherit' });
-                console.log(chalk.green('✅ Bot atualizado com sucesso.'));
-                
-                // Verifica se o package.json mudou 
-                 execSync('npm install', { stdio: 'inherit' });
-                
-                return true; // Indica que houve atualização e o bot deve reiniciar
-            } catch (pullError) {
-                console.log(chalk.red('🚫 Erro ao atualizar. Tentando forçar atualização...'));
-                
-                 execSync('git reset --hard origin/main', { stdio: 'inherit' });
-                return false;
+
+                // salva dados do usuário
+                execSync('git stash --include-untracked', { stdio: 'ignore' })
+
+                // atualiza bot
+                execSync('git pull origin main', { stdio: 'ignore' })
+
+                // restaura dados
+                execSync('git stash pop || true', { stdio: 'ignore' })
+
+                // instala dependências se necessário
+                execSync('npm install', { stdio: 'ignore' })
+
+                console.log(chalk.green('✅ Bot atualizado com sucesso.'))
+
+                return true
+
+            } catch {
+
+                console.log(chalk.red('⚠️ Erro ao atualizar. Aplicando atualização segura...'))
+
+                execSync('git fetch origin main', { stdio: 'ignore' })
+                execSync('git reset --hard origin/main', { stdio: 'ignore' })
+                execSync('npm install', { stdio: 'ignore' })
+
+                console.log(chalk.green('✅ Bot atualizado com sucesso.'))
+
+                return true
             }
+
         } else {
-            console.log(chalk.cyan('✅ O bot já está atualizado.'));
-            return false;
+
+            console.log(chalk.green('✔ Bot já está atualizado.'))
+            return false
+
         }
+
     } catch (error) {
-        console.error(chalk.red('❌ [Auto-Update] Erro durante a verificação:'), error.message);
-        return false;
+
+        console.log(chalk.red('❌ Falha ao verificar atualização.'))
+        return false
     }
 }
 
-module.exports = { checkAndApplyUpdates };
+module.exports = { checkAndApplyUpdates }
