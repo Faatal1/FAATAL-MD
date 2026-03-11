@@ -167,8 +167,10 @@ return `╭━━━〔 👹 𝐌𝐄𝐍𝐔 𝐃𝐎𝐍𝐎 👹 〕━━━
 ┃ 🎭 𝐂𝐎𝐍𝐓𝐑𝐎𝐋𝐄 𝐓𝐎𝐓𝐀𝐋
 ╰━━━━━━━━━━━━━━━━━━━━━━
 ┃ 
+┃ 🎩 ${prefix}blockuser (@)
+┃ 🎩 ${prefix}unblockuser (@)
 ┃ 🎩 ${prefix}atualizar 
-┃ 🎩 ${prefix}fotobot
+┃ 🎩 ${prefix}fotobot 
 ┃ 🎩 ${prefix}revelar 
 ┃ 🎩 ${prefix}criargp
 ┃ 🎩 ${prefix}listavip
