@@ -39,6 +39,19 @@ finalizarSpinner
 
 const { checkAndApplyUpdates } = require('./autoupdate');
 
+//━━━━━━━━━━━━━━━━━━
+// 🔒 PROTEGER DADOS DO USUÁRIO
+//━━━━━━━━━━━━━━━━━━
+const { execSync } = require("child_process")
+
+try {
+
+execSync("git update-index --skip-worktree dono/config/data.json", { stdio: "ignore" })
+
+execSync("git ls-files arquivos/config/*.json | xargs -I {} git update-index --skip-worktree {}", { stdio: "ignore" })
+
+} catch {}
+
 
 
 const fs = require('fs')

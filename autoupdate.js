@@ -5,66 +5,71 @@ const chalk = require('chalk')
 
 async function checkAndApplyUpdates() {
 
-    console.log(chalk.blue('🔎 Verificando atualizações...'))
+console.log(chalk.cyan('🔎 Verificando atualizações...'))
 
-    try {
+try {
 
-        if (!fs.existsSync(path.join(__dirname, '.git'))) {
-            console.log(chalk.yellow('⚠️ Repositório git não encontrado.'))
-            return false
-        }
+if (!fs.existsSync(path.join(__dirname, '.git'))) {
+console.log(chalk.yellow('⚠ Repositório git não encontrado.'))
+return false
+}
 
-        execSync('git fetch', { stdio: 'ignore' })
+// proteger arquivos de dados
+try {
 
-        const status = execSync('git status -uno').toString()
+execSync("git update-index --skip-worktree dono/config/data.json",{stdio:"ignore"})
 
-        if (status.includes('behind') || status.includes('pode ser atualizado')) {
+execSync("git ls-files arquivos/config/*.json | xargs -I {} git update-index --skip-worktree {}",{stdio:"ignore"})
 
-            console.log(chalk.yellow('⬇️ Atualização encontrada. Atualizando...'))
+} catch {}
 
-            try {
+execSync('git fetch',{stdio:'ignore'})
 
-                // salva dados do usuário
-                execSync('git stash --include-untracked', { stdio: 'ignore' })
+const local = execSync('git rev-parse HEAD').toString().trim()
+const remote = execSync('git rev-parse origin/main').toString().trim()
 
-                // atualiza bot
-                execSync('git pull origin main', { stdio: 'ignore' })
+if(local === remote){
 
-                // restaura dados
-                execSync('git stash pop || true', { stdio: 'ignore' })
+console.log(chalk.green('✔ Bot já está atualizado.'))
+return false
 
-                // instala dependências se necessário
-                execSync('npm install', { stdio: 'ignore' })
+}
 
-                console.log(chalk.green('✅ Bot atualizado com sucesso.'))
+console.log(chalk.yellow('⬇ Atualização encontrada. Atualizando...'))
 
-                return true
+try{
 
-            } catch {
+execSync('git pull origin main',{stdio:'ignore'})
 
-                console.log(chalk.red('⚠️ Erro ao atualizar. Aplicando atualização segura...'))
+execSync('npm install',{stdio:'ignore'})
 
-                execSync('git fetch origin main', { stdio: 'ignore' })
-                execSync('git reset --hard origin/main', { stdio: 'ignore' })
-                execSync('npm install', { stdio: 'ignore' })
+console.log(chalk.green('✅ Bot atualizado com sucesso.'))
 
-                console.log(chalk.green('✅ Bot atualizado com sucesso.'))
+return true
 
-                return true
-            }
+}catch{
 
-        } else {
+console.log(chalk.red('⚠ Aplicando atualização segura...'))
 
-            console.log(chalk.green('✔ Bot já está atualizado.'))
-            return false
+execSync('git fetch origin main',{stdio:'ignore'})
 
-        }
+execSync('git reset --hard origin/main',{stdio:'ignore'})
 
-    } catch (error) {
+execSync('npm install',{stdio:'ignore'})
 
-        console.log(chalk.red('❌ Falha ao verificar atualização.'))
-        return false
-    }
+console.log(chalk.green('✅ Atualização concluída.'))
+
+return true
+
+}
+
+}catch(e){
+
+console.log(chalk.red('❌ Falha ao verificar atualização.'))
+return false
+
+}
+
 }
 
 module.exports = { checkAndApplyUpdates }
